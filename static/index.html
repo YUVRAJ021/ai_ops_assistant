@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Operations Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e4e4e7;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-section {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        textarea::placeholder {
+            color: #64748b;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.875rem 1.75rem;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .examples {
+            margin-top: 1.5rem;
+        }
+
+        .examples h3 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #94a3b8;
+            margin-bottom: 0.75rem;
+        }
+
+        .example-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .chip {
+            padding: 0.5rem 1rem;
+            background: rgba(96, 165, 250, 0.1);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            color: #93c5fd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            background: rgba(96, 165, 250, 0.2);
+            border-color: rgba(96, 165, 250, 0.5);
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .results-section.visible {
+            display: block;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .result-header h2 {
+            font-size: 1.25rem;
+            color: #e2e8f0;
+        }
+
+        .status-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .status-loading {
+            background: rgba(96, 165, 250, 0.2);
+            color: #60a5fa;
+        }
+
+        .agent-steps {
+            margin-bottom: 1.5rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .step-planner .step-icon {
+            background: rgba(167, 139, 250, 0.2);
+        }
+
+        .step-executor .step-icon {
+            background: rgba(251, 191, 36, 0.2);
+        }
+
+        .step-verifier .step-icon {
+            background: rgba(52, 211, 153, 0.2);
+        }
+
+        .step-content h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .step-content p {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .final-response {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .final-response h1, .final-response h2, .final-response h3 {
+            color: #e2e8f0;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .final-response h2 {
+            font-size: 1.25rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        .final-response h3 {
+            font-size: 1.1rem;
+        }
+
+        .final-response ul, .final-response ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .final-response li {
+            margin-bottom: 0.5rem;
+        }
+
+        .final-response table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .final-response th, .final-response td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .final-response th {
+            background: rgba(255,255,255,0.05);
+            font-weight: 600;
+        }
+
+        .final-response code {
+            background: rgba(0,0,0,0.3);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.875em;
+        }
+
+        .final-response pre {
+            background: rgba(0,0,0,0.4);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .final-response strong {
+            color: #f1f5f9;
+        }
+
+        .tools-section {
+            margin-top: 2rem;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .tool-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tool-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+        }
+
+        .tool-card p {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            color: #fca5a5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Operations Assistant</h1>
+            <p class="subtitle">Multi-agent system powered by Gemini LLM</p>
+        </header>
+
+        <div class="main-card">
+            <div class="input-section">
+                <label for="task-input">What would you like me to do?</label>
+                <textarea 
+                    id="task-input" 
+                    placeholder="Enter a natural language task, e.g., 'Find the top 5 Python repositories on GitHub and tell me the weather in Tokyo'"
+                ></textarea>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-primary" id="submit-btn" onclick="submitTask()">
+                    <span id="btn-text">Run Task</span>
+                    <span id="btn-spinner" class="loading-spinner" style="display: none;"></span>
+                </button>
+                <button class="btn-secondary" onclick="clearResults()">Clear</button>
+            </div>
+
+            <div class="examples">
+                <h3>Try these examples</h3>
+                <div class="example-chips">
+                    <span class="chip" onclick="setExample('What is the current weather in New York?')">Weather in NYC</span>
+                    <span class="chip" onclick="setExample('Find top 5 machine learning repositories on GitHub')">ML Repos</span>
+                    <span class="chip" onclick="setExample('Get details about the react repository owned by facebook')">React Details</span>
+                    <span class="chip" onclick="setExample('Weather forecast for London for the next 7 days')">London Forecast</span>
+                    <span class="chip" onclick="setExample('Tell me about GitHub user torvalds and the weather in Helsinki')">Combined Query</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-card results-section" id="results-section">
+            <div class="result-header">
+                <h2>Results</h2>
+                <span class="status-badge" id="status-badge">Processing</span>
+            </div>
+
+            <div class="agent-steps" id="agent-steps">
+                <!-- Steps will be inserted here -->
+            </div>
+
+            <div class="final-response" id="final-response">
+                <!-- Final response will be inserted here -->
+            </div>
+        </div>
+
+        <div class="main-card tools-section">
+            <h2 style="margin-bottom: 1rem; color: #e2e8f0;">Available Tools</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h4>🐙 GitHub</h4>
+                    <p>Search repositories, get repo details, stars, descriptions, and user information</p>
+                </div>
+                <div class="tool-card">
+                    <h4>🌤️ Weather</h4>
+                    <p>Get current weather and 7-day forecast for any city worldwide</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Built with FastAPI, Google Gemini, and Multi-Agent Architecture</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const API_URL = '';  // Same origin
+
+        function setExample(text) {
+            document.getElementById('task-input').value = text;
+        }
+
+        function clearResults() {
+            document.getElementById('task-input').value = '';
+            document.getElementById('results-section').classList.remove('visible');
+            document.getElementById('agent-steps').innerHTML = '';
+            document.getElementById('final-response').innerHTML = '';
+        }
+
+        async function submitTask() {
+            const taskInput = document.getElementById('task-input');
+            const task = taskInput.value.trim();
+            
+            if (!task) {
+                alert('Please enter a task');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const btnSpinner = document.getElementById('btn-spinner');
+            const resultsSection = document.getElementById('results-section');
+            const statusBadge = document.getElementById('status-badge');
+            const agentSteps = document.getElementById('agent-steps');
+            const finalResponse = document.getElementById('final-response');
+
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.textContent = 'Processing...';
+            btnSpinner.style.display = 'inline-block';
+            
+            resultsSection.classList.add('visible');
+            statusBadge.textContent = 'Processing';
+            statusBadge.className = 'status-badge status-loading';
+            
+            // Show agent steps
+            agentSteps.innerHTML = `
+                <div class="step step-planner">
+                    <div class="step-icon">🤖</div>
+                    <div class="step-content">
+                        <h4>Planner Agent</h4>
+                        <p>Analyzing task and creating execution plan...</p>
+                    </div>
+                </div>
+                <div class="step step-executor">
+                    <div class="step-icon">⚡</div>
+                    <div class="step-content">
+                        <h4>Executor Agent</h4>
+                        <p>Waiting...</p>
+                    </div>
+                </div>
+                <div class="step step-verifier">
+                    <div class="step-icon">✔️</div>
+                    <div class="step-content">
+                        <h4>Verifier Agent</h4>
+                        <p>Waiting...</p>
+                    </div>
+                </div>
+            `;
+            finalResponse.innerHTML = '<p style="color: #94a3b8;">Processing your request...</p>';
+
+            try {
+                const response = await fetch('/task', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ task, verbose: true }),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    statusBadge.textContent = 'Success';
+                    statusBadge.className = 'status-badge status-success';
+                    
+                    // Update agent steps
+                    const planSteps = result.plan?.steps || [];
+                    const execResults = result.execution_results || [];
+                    
+                    let stepsHtml = `
+                        <div class="step step-planner">
+                            <div class="step-icon">🤖</div>
+                            <div class="step-content">
+                                <h4>Planner Agent</h4>
+                                <p>Created ${planSteps.length} step(s): ${result.plan?.task_understanding || 'Task analyzed'}</p>
+                            </div>
+                        </div>
+                        <div class="step step-executor">
+                            <div class="step-icon">⚡</div>
+                            <div class="step-content">
+                                <h4>Executor Agent</h4>
+                                <p>Executed ${execResults.filter(r => r.success).length}/${execResults.length} steps successfully</p>
+                            </div>
+                        </div>
+                        <div class="step step-verifier">
+                            <div class="step-icon">✔️</div>
+                            <div class="step-content">
+                                <h4>Verifier Agent</h4>
+                                <p>Results verified and formatted</p>
+                            </div>
+                        </div>
+                    `;
+                    agentSteps.innerHTML = stepsHtml;
+                    
+                    // Render markdown response
+                    finalResponse.innerHTML = marked.parse(result.response || 'No response');
+                } else {
+                    statusBadge.textContent = 'Error';
+                    statusBadge.className = 'status-badge status-error';
+                    finalResponse.innerHTML = `<div class="error-message">${result.error || result.detail || 'An error occurred'}</div>`;
+                }
+            } catch (error) {
+                statusBadge.textContent = 'Error';
+                statusBadge.className = 'status-badge status-error';
+                finalResponse.innerHTML = `<div class="error-message">Failed to connect to the server. Make sure the API is running on port 8000.</div>`;
+            } finally {
+                submitBtn.disabled = false;
+                btnText.textContent = 'Run Task';
+                btnSpinner.style.display = 'none';
+            }
+        }
+
+        // Allow Enter key to submit (with Ctrl/Cmd)
+        document.getElementById('task-input').addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                submitTask();
+            }
+        });
+    </script>
+</body>
+</html>

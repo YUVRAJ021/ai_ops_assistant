@@ -1,0 +1,338 @@
+================================================================================
+       AI OPERATIONS ASSISTANT - WINDOWS 11 SETUP & DEMO GUIDE
+================================================================================
+
+This guide provides step-by-step instructions to set up and run the AI 
+Operations Assistant on Windows 11.
+
+================================================================================
+                         PREREQUISITES
+================================================================================
+
+Before starting, ensure you have:
+
+1. Python 3.10 or higher installed
+   - Download from: https://www.python.org/downloads/
+   - IMPORTANT: During installation, check "Add Python to PATH"
+
+2. Git installed (optional, for cloning)
+   - Download from: https://git-scm.com/download/win
+
+3. A web browser (Chrome, Firefox, or Edge)
+
+4. Internet connection (for API calls)
+
+================================================================================
+                    STEP 1: VERIFY PYTHON INSTALLATION
+================================================================================
+
+Open Command Prompt (cmd) or PowerShell and run:
+
+    python --version
+
+You should see something like: Python 3.11.x or higher
+
+If you see an error, Python is not installed or not in PATH.
+
+================================================================================
+                    STEP 2: NAVIGATE TO PROJECT FOLDER
+================================================================================
+
+Option A - If you have the project folder:
+
+    cd C:\path\to\ai_ops_assistant
+
+Option B - If copying from another location:
+
+    1. Copy the entire "ai_ops_assistant" folder to your desired location
+    2. Open Command Prompt
+    3. Navigate to the folder:
+       
+       cd C:\Users\YourUsername\Documents\ai_ops_assistant
+
+================================================================================
+                    STEP 3: CREATE VIRTUAL ENVIRONMENT
+================================================================================
+
+Run these commands in order:
+
+    python -m venv venv
+
+This creates a virtual environment named "venv" in the project folder.
+
+================================================================================
+                    STEP 4: ACTIVATE VIRTUAL ENVIRONMENT
+================================================================================
+
+For Command Prompt (cmd):
+
+    venv\Scripts\activate
+
+For PowerShell:
+
+    .\venv\Scripts\Activate.ps1
+
+NOTE: If you get an error in PowerShell about execution policy, run:
+
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+Then try activating again.
+
+After activation, you should see (venv) at the beginning of your prompt:
+
+    (venv) C:\Users\YourUsername\Documents\ai_ops_assistant>
+
+================================================================================
+                    STEP 5: INSTALL DEPENDENCIES
+================================================================================
+
+With the virtual environment activated, run:
+
+    pip install -r requirements.txt
+
+Wait for all packages to download and install. This may take 2-3 minutes.
+
+================================================================================
+                    STEP 6: CONFIGURE ENVIRONMENT VARIABLES
+================================================================================
+
+The Gemini API key is already configured in the .env file.
+
+To verify or change it:
+
+    1. Open .env file in Notepad:
+       
+       notepad .env
+
+    2. Verify it contains:
+       
+       GEMINI_API_KEY=AIzaSyDrEHdAPlK3LqG4lrsYu4hG_GjJUUEoNoo
+
+    3. Save and close
+
+================================================================================
+                    STEP 7: RUN THE APPLICATION
+================================================================================
+
+You have THREE options to run the application:
+
+--------------------------------------------------------------------------------
+OPTION A: WEB UI MODE (Recommended for Demo)
+--------------------------------------------------------------------------------
+
+Run this command:
+
+    python main.py --api --port 8000
+
+You should see:
+    
+    🚀 Starting AI Operations Assistant API on port 8000...
+    INFO:     Uvicorn running on http://0.0.0.0:8000
+
+Now open your web browser and go to:
+
+    http://localhost:8000
+
+You will see a beautiful web interface!
+
+To stop the server: Press Ctrl+C in the command prompt
+
+--------------------------------------------------------------------------------
+OPTION B: INTERACTIVE CLI MODE
+--------------------------------------------------------------------------------
+
+Run this command:
+
+    python main.py
+
+You will see:
+
+    ============================================================
+    🤖 AI Operations Assistant - Interactive Mode
+    ============================================================
+
+Type your tasks and press Enter. Type "quit" to exit.
+
+--------------------------------------------------------------------------------
+OPTION C: SINGLE COMMAND MODE
+--------------------------------------------------------------------------------
+
+Run a single task with verbose output:
+
+    python main.py -v "What is the weather in New York?"
+
+================================================================================
+                         DEMO WALKTHROUGH
+================================================================================
+
+Follow these steps to demonstrate the application:
+
+--------------------------------------------------------------------------------
+DEMO STEP 1: Start the Web UI
+--------------------------------------------------------------------------------
+
+    python main.py --api --port 8000
+
+Open browser to: http://localhost:8000
+
+--------------------------------------------------------------------------------
+DEMO STEP 2: Try Weather Query
+--------------------------------------------------------------------------------
+
+In the web UI:
+1. Click the "Weather in NYC" example chip
+   OR type: "What is the current weather in New York?"
+2. Click "Run Task" button
+3. Watch the agent steps:
+   - 🤖 Planner Agent: Creates execution plan
+   - ⚡ Executor Agent: Calls Weather API
+   - ✔️ Verifier Agent: Formats response
+4. See the formatted weather report with temperature, humidity, etc.
+
+--------------------------------------------------------------------------------
+DEMO STEP 3: Try GitHub Query
+--------------------------------------------------------------------------------
+
+Type or click: "Find top 5 machine learning repositories on GitHub"
+1. Click "Run Task"
+2. See the list of top ML repositories with stars and descriptions
+
+--------------------------------------------------------------------------------
+DEMO STEP 4: Try Combined Query (Shows Multi-Step Planning)
+--------------------------------------------------------------------------------
+
+Type: "Get details about the tensorflow repository and tell me the weather in Tokyo"
+
+This demonstrates:
+- Multi-step planning (2 API calls)
+- GitHub API integration
+- Weather API integration
+- Result aggregation
+
+--------------------------------------------------------------------------------
+DEMO STEP 5: Try CLI Mode (Optional)
+--------------------------------------------------------------------------------
+
+Stop the web server (Ctrl+C) and run:
+
+    python main.py
+
+Then type tasks interactively:
+
+    📝 Enter your task: Search for Python web frameworks on GitHub
+
+================================================================================
+                    EXAMPLE QUERIES TO TRY
+================================================================================
+
+Weather Queries:
+- "What is the current weather in Mumbai?"
+- "Get the 7-day weather forecast for London"
+- "What's the weather like in Paris, France?"
+
+GitHub Queries:
+- "Find the top 5 Python web frameworks on GitHub"
+- "Get details about the react repository owned by facebook"
+- "Tell me about GitHub user torvalds"
+- "Search for machine learning repositories with more than 50000 stars"
+
+Combined Queries:
+- "Find popular weather API repositories on GitHub and tell me the weather in San Francisco"
+- "Get information about the django repository and the weather in Amsterdam"
+
+================================================================================
+                       TROUBLESHOOTING
+================================================================================
+
+ISSUE: "python is not recognized as an internal or external command"
+FIX: Python is not in PATH. Reinstall Python and check "Add to PATH"
+
+ISSUE: "pip is not recognized"
+FIX: Use "python -m pip" instead of "pip"
+     Example: python -m pip install -r requirements.txt
+
+ISSUE: PowerShell execution policy error
+FIX: Run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+ISSUE: "Address already in use" error on port 8000
+FIX: Use a different port:
+     python main.py --api --port 8080
+     Then go to http://localhost:8080
+
+ISSUE: API quota exceeded error
+FIX: Wait a few minutes and try again (free tier has rate limits)
+
+ISSUE: Module not found error
+FIX: Make sure virtual environment is activated (you see (venv) in prompt)
+     Then reinstall: pip install -r requirements.txt
+
+================================================================================
+                      QUICK REFERENCE COMMANDS
+================================================================================
+
+Activate virtual environment:
+    venv\Scripts\activate
+
+Start Web UI:
+    python main.py --api --port 8000
+
+Start Interactive CLI:
+    python main.py
+
+Run single task:
+    python main.py "Your task here"
+
+Run with verbose output:
+    python main.py -v "Your task here"
+
+Deactivate virtual environment:
+    deactivate
+
+================================================================================
+                          API ENDPOINTS
+================================================================================
+
+When running in API mode, these endpoints are available:
+
+GET  http://localhost:8000/          - Web UI
+GET  http://localhost:8000/api       - API information
+GET  http://localhost:8000/health    - Health check
+GET  http://localhost:8000/tools     - List available tools
+POST http://localhost:8000/task      - Submit a task
+
+Example API call with curl:
+
+    curl -X POST http://localhost:8000/task -H "Content-Type: application/json" -d "{\"task\": \"Weather in Tokyo\"}"
+
+================================================================================
+                       PROJECT ARCHITECTURE
+================================================================================
+
+The application uses a 3-agent architecture:
+
+1. PLANNER AGENT (🤖)
+   - Analyzes your natural language request
+   - Creates a step-by-step execution plan
+   - Selects appropriate tools for each step
+
+2. EXECUTOR AGENT (⚡)
+   - Executes each step in the plan
+   - Calls GitHub API and Weather API
+   - Handles retries on failures (up to 3 attempts)
+
+3. VERIFIER AGENT (✔️)
+   - Validates execution results
+   - Formats the final response
+   - Ensures completeness and quality
+
+Available Tools:
+- GitHub: Search repos, get repo details, get user info
+- Weather: Current weather and 7-day forecast (worldwide)
+
+================================================================================
+                              END OF GUIDE
+================================================================================
+
+For more information, see README.md in the project folder.
+
+Happy demoing! 🚀
